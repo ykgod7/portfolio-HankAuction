@@ -12,19 +12,16 @@ type Props = {
 
 function GroupSection({
   title,
-  allLabel,
   items,
   selected,
   onChange,
 }: {
   title: string
-  allLabel: string
   items: string[]
   selected: string[]
   onChange: (types: string[]) => void
 }) {
   const allSelected = items.every((item) => selected.includes(item))
-  const someSelected = items.some((item) => selected.includes(item))
 
   const toggleAll = () => {
     if (allSelected) {
@@ -45,30 +42,28 @@ function GroupSection({
 
   return (
     <div>
-      <div className="flex items-center gap-3 mb-2">
-        <span className="text-xs font-bold text-gray-500 uppercase tracking-wide">{title}</span>
-        <label className="flex items-center gap-1 cursor-pointer">
-          <input
-            type="checkbox"
-            checked={allSelected}
-            ref={(el) => { if (el) el.indeterminate = someSelected && !allSelected }}
-            onChange={toggleAll}
-            className="w-4 h-4 accent-blue-600"
-          />
-          <span className="text-sm text-gray-600">{allLabel}</span>
-        </label>
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">{title}</span>
+        <button
+          onClick={toggleAll}
+          className="text-xs text-blue-500 hover:text-blue-700 transition-colors"
+        >
+          {allSelected ? '전체 해제' : '전체 선택'}
+        </button>
       </div>
-      <div className="flex flex-wrap gap-x-4 gap-y-2">
+      <div className="flex flex-wrap gap-2">
         {items.map((item) => (
-          <label key={item} className="flex items-center gap-1 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={selected.includes(item)}
-              onChange={() => toggleOne(item)}
-              className="w-4 h-4 accent-blue-600"
-            />
-            <span className="text-sm text-gray-700">{item}</span>
-          </label>
+          <button
+            key={item}
+            onClick={() => toggleOne(item)}
+            className={`px-3 py-1 rounded-full text-sm border transition-all ${
+              selected.includes(item)
+                ? 'bg-blue-600 text-white border-blue-600'
+                : 'bg-white text-slate-600 border-slate-200 hover:border-blue-400'
+            }`}
+          >
+            {item}
+          </button>
         ))}
       </div>
     </div>
@@ -77,27 +72,20 @@ function GroupSection({
 
 export default function TypeSelector({ selected, onChange }: Props) {
   return (
-    <div>
-      <h2 className="text-sm font-semibold text-gray-700 mb-3">
-        물건 종류 <span className="text-gray-400 font-normal">(미선택 시 전체)</span>
-      </h2>
-      <div className="flex flex-col gap-5">
-        <GroupSection
-          title="주거용"
-          allLabel="주거용 전체"
-          items={RESIDENTIAL_TYPES}
-          selected={selected}
-          onChange={onChange}
-        />
-        <div className="border-t border-gray-100" />
-        <GroupSection
-          title="상업용"
-          allLabel="상업용 전체"
-          items={COMMERCIAL_TYPES}
-          selected={selected}
-          onChange={onChange}
-        />
-      </div>
+    <div className="flex flex-col gap-5">
+      <GroupSection
+        title="주거용"
+        items={RESIDENTIAL_TYPES}
+        selected={selected}
+        onChange={onChange}
+      />
+      <div className="border-t border-slate-100" />
+      <GroupSection
+        title="상업용"
+        items={COMMERCIAL_TYPES}
+        selected={selected}
+        onChange={onChange}
+      />
     </div>
   )
 }

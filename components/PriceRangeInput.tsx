@@ -1,4 +1,3 @@
-// 웹사이트 단위: 원 / DB 단위: 만원 → 값은 만원으로 저장
 const PRICE_OPTIONS: { label: string; value: number | null }[] = [
   { label: '전체', value: null },
   { label: '1백만', value: 100 },
@@ -36,20 +35,7 @@ const PRICE_OPTIONS: { label: string; value: number | null }[] = [
   { label: '30억', value: 300000 },
   { label: '40억', value: 400000 },
   { label: '50억', value: 500000 },
-  { label: '60억', value: 600000 },
-  { label: '70억', value: 700000 },
-  { label: '80억', value: 800000 },
-  { label: '90억', value: 900000 },
   { label: '100억', value: 1000000 },
-  { label: '200억', value: 2000000 },
-  { label: '300억', value: 3000000 },
-  { label: '400억', value: 4000000 },
-  { label: '500억', value: 5000000 },
-  { label: '600억', value: 6000000 },
-  { label: '700억', value: 7000000 },
-  { label: '800억', value: 8000000 },
-  { label: '900억', value: 9000000 },
-  { label: '1000억', value: 10000000 },
 ]
 
 type Props = {
@@ -76,7 +62,7 @@ function PriceSelect({
     <select
       value={value ?? ''}
       onChange={handleChange}
-      className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-400 bg-white"
+      className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm text-slate-700 bg-slate-50 focus:outline-none focus:border-blue-400 focus:bg-white transition-colors"
     >
       {PRICE_OPTIONS.map((opt) => (
         <option key={opt.label} value={opt.value ?? ''}>
@@ -90,12 +76,11 @@ function PriceSelect({
 export default function PriceRangeInput({ label, min, max, onChangeMin, onChangeMax }: Props) {
   return (
     <div>
-      <h2 className="text-sm font-semibold text-gray-700 mb-2">{label}</h2>
+      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">{label}</p>
       <div className="flex items-center gap-2">
         <PriceSelect value={min} onChange={onChangeMin} />
-        <span className="text-gray-500 text-sm">원 ~</span>
+        <span className="text-slate-400 text-sm shrink-0">~</span>
         <PriceSelect value={max} onChange={onChangeMax} />
-        <span className="text-gray-500 text-sm">원</span>
       </div>
     </div>
   )

@@ -27,18 +27,16 @@ export default function SpecialConditionSelector({ selected, onChange }: Props) 
 
   return (
     <div>
-      <h2 className="text-sm font-semibold text-gray-700 mb-2">
-        특수조건 <span className="text-gray-400 font-normal">(해당 태그 포함 물건만)</span>
-      </h2>
+      <p className="text-xs text-slate-400 mb-3">(해당 태그 포함 물건만 알림)</p>
       <div className="flex flex-wrap gap-2">
         {SPECIAL_CONDITIONS.map((condition) => (
           <button
             key={condition}
             onClick={() => toggle(condition)}
-            className={`px-3 py-1 rounded-full text-sm border transition-colors ${
+            className={`px-3 py-1 rounded-full text-sm border transition-all ${
               selected.includes(condition)
                 ? 'bg-orange-500 text-white border-orange-500'
-                : 'bg-white text-gray-600 border-gray-300 hover:border-orange-400'
+                : 'bg-white text-slate-600 border-slate-200 hover:border-orange-400'
             }`}
           >
             {condition}

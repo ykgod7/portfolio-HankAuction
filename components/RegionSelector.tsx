@@ -24,6 +24,9 @@ type Props = {
 }
 
 export default function RegionSelector({ selected, onChange }: Props) {
+  const allValues = REGIONS.map((r) => r.value)
+  const allSelected = allValues.every((v) => selected.includes(v))
+
   const toggle = (value: string) => {
     if (selected.includes(value)) {
       onChange(selected.filter((r) => r !== value))
@@ -32,20 +35,34 @@ export default function RegionSelector({ selected, onChange }: Props) {
     }
   }
 
+  const toggleAll = () => {
+    if (allSelected) {
+      onChange([])
+    } else {
+      onChange(allValues)
+    }
+  }
+
   return (
     <div>
-      <h2 className="text-sm font-semibold text-gray-700 mb-2">
-        지역 <span className="text-gray-400 font-normal">(미선택 시 전국)</span>
-      </h2>
+      <div className="flex items-center justify-between mb-3">
+        <span className="text-xs text-slate-400">(미선택 시 전국)</span>
+        <button
+          onClick={toggleAll}
+          className="text-xs text-blue-500 hover:text-blue-700 transition-colors"
+        >
+          {allSelected ? '전체 해제' : '전체 선택'}
+        </button>
+      </div>
       <div className="flex flex-wrap gap-2">
         {REGIONS.map((region) => (
           <button
             key={region.value}
             onClick={() => toggle(region.value)}
-            className={`px-3 py-1 rounded-full text-sm border transition-colors ${
+            className={`px-3 py-1 rounded-full text-sm border transition-all ${
               selected.includes(region.value)
                 ? 'bg-blue-600 text-white border-blue-600'
-                : 'bg-white text-gray-600 border-gray-300 hover:border-blue-400'
+                : 'bg-white text-slate-600 border-slate-200 hover:border-blue-400'
             }`}
           >
             {region.label}
