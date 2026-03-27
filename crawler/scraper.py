@@ -1,5 +1,4 @@
 import re
-import json
 from dataclasses import dataclass, field
 from datetime import date
 from pathlib import Path
@@ -50,9 +49,7 @@ class AuctionItem:
     tags_raw: str = ""    # 특수물건 전체 텍스트 (분묘기지권, 농지취득 등 포함)
 
 
-def scrape_hauction(start_date: date) -> list[AuctionItem]:
-    items: list[AuctionItem] = []
-
+def scrape_hauction() -> list[AuctionItem]:
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         context = browser.new_context(
@@ -65,22 +62,7 @@ def scrape_hauction(start_date: date) -> list[AuctionItem]:
         _apply_view_settings(page)
         page.wait_for_selector("tr.info-row", timeout=15000)
 
-        page_num = 1
-        while True:
-            page_items = _parse_page(page)
-            if not page_items:
-                break
-
-            new_items = [i for i in page_items if i.bid_date >= start_date]
-            items.extend(new_items)
-
-            if any(i.bid_date < start_date for i in page_items):
-                break
-
-            if not _go_next_page(page, page_num):
-                break
-            page_num += 1
-
+        items = _parse_page(page)
         browser.close()
 
     return items

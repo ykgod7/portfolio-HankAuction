@@ -32,21 +32,6 @@ def get_filter_config() -> FilterConfig:
     )
 
 
-INITIAL_START_DATE = date(2026, 6, 18)  # 최초 크롤링 기준일
-
-
-def get_start_date() -> date:
-    res = (
-        supabase.table("sent_items")
-        .select("bid_date")
-        .order("bid_date", desc=True)
-        .limit(1)
-        .execute()
-    )
-    if res.data and res.data[0].get("bid_date"):
-        return date.fromisoformat(res.data[0]["bid_date"])
-    return INITIAL_START_DATE
-
 
 def get_sent_keys() -> set[tuple[str, str]]:
     res = supabase.table("sent_items").select("case_number, bid_date").execute()
@@ -70,10 +55,9 @@ def main(dry_run: bool = False) -> None:
     try:
         refresh_access_token()
         config = get_filter_config()
-        start_date = get_start_date()
 
-        print(f"크롤링 시작: {start_date} 이후 물건 (매각기일 최신순)")
-        items = scrape_hauction(start_date=start_date)
+        print("크롤링 시작: 최신 100건")
+        items = scrape_hauction()
         print(f"크롤링 완료: {len(items)}건")
 
         filtered = apply_filters(items, config)
