@@ -48,9 +48,9 @@ def get_start_date() -> date:
     return INITIAL_START_DATE
 
 
-def get_sent_case_numbers() -> set[str]:
-    res = supabase.table("sent_items").select("case_number").execute()
-    return {row["case_number"] for row in res.data}
+def get_sent_keys() -> set[tuple[str, str]]:
+    res = supabase.table("sent_items").select("case_number, bid_date").execute()
+    return {(row["case_number"], row["bid_date"]) for row in res.data}
 
 
 def save_sent_item(case_number: str, bid_date: date) -> None:
@@ -78,8 +78,8 @@ def main(dry_run: bool = False) -> None:
         filtered = apply_filters(items, config)
         print(f"필터 적용 후: {len(filtered)}건")
 
-        sent = get_sent_case_numbers()
-        new_items = [i for i in filtered if i.case_number not in sent]
+        sent = get_sent_keys()
+        new_items = [i for i in filtered if (i.case_number, i.bid_date.isoformat()) not in sent]
         print(f"신규 물건: {len(new_items)}건")
 
         for item in new_items:
