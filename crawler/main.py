@@ -7,7 +7,7 @@ from supabase import create_client
 
 from scraper import scrape_hauction
 from filter import apply_filters, FilterConfig
-from kakao import send_summary, send_no_items, send_item_card, send_error
+from kakao import refresh_access_token, send_summary, send_no_items, send_item_card, send_error
 
 load_dotenv()
 
@@ -68,6 +68,7 @@ def update_last_crawled_at() -> None:
 
 def main(dry_run: bool = False) -> None:
     try:
+        refresh_access_token()
         config = get_filter_config()
         start_date = get_start_date()
 

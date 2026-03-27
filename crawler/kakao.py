@@ -8,6 +8,25 @@ KAKAO_API_URL = "https://kapi.kakao.com/v2/api/talk/memo/default/send"
 HAUCTION_URL = "https://www.hauction.co.kr/search/auction"
 
 
+def refresh_access_token() -> None:
+    rest_api_key = os.environ["KAKAO_REST_API_KEY"]
+    refresh_token = os.environ["KAKAO_REFRESH_TOKEN"]
+    client_secret = os.environ.get("KAKAO_CLIENT_SECRET", "")
+    data = {
+        "grant_type": "refresh_token",
+        "client_id": rest_api_key,
+        "refresh_token": refresh_token,
+    }
+    if client_secret:
+        data["client_secret"] = client_secret
+    res = requests.post("https://kauth.kakao.com/oauth/token", data=data)
+    res.raise_for_status()
+    data = res.json()
+    os.environ["KAKAO_ACCESS_TOKEN"] = data["access_token"]
+    if "refresh_token" in data:
+        os.environ["KAKAO_REFRESH_TOKEN"] = data["refresh_token"]
+
+
 def _send(template: dict) -> None:
     token = os.environ["KAKAO_ACCESS_TOKEN"]
     requests.post(
